@@ -1,6 +1,6 @@
 print("🍱 [야메추 모듈] Lua 트리거 스크립트 실행됨")
 
--- 1. 순수 Lua 문자열 기반 JSON 안전 인코더/파서
+-- 1. 순수 Lua 문자열 기반 JSON 안전 인코더
 local function json_encode(val)
     local t = type(val)
     if t == "table" then
@@ -31,25 +31,17 @@ local dbRaw = getVar("menu_db") or ""
 local userMsg = getUserMessage() or ""
 local aiMsg = getAiMessage() or ""
 
--- 간단 키워드 기반 데이터 구조 복원
-local db = {}
+-- 기본 메뉴 DB 정의
+local db = {
+    ["짜장면"] = { category = "중식", is_favorite = false, is_new = false, score_offset = 0, refused_count = 0, refused_days_ago = 0, disliked = false },
+    ["김치찌개"] = { category = "한식", is_favorite = true, is_new = false, score_offset = 0, eaten_days_ago = 8, refused_count = 0, refused_days_ago = 0, disliked = false },
+    ["후라이드치킨"] = { category = "치킨", is_favorite = true, is_new = false, score_score_offset = 0, refused_count = 0, refused_days_ago = 0, disliked = false }
+}
 
--- DB가 비어있거나 초기 상태일 경우 세팅
-if dbRaw == "" or not string.find(dbRaw, "category") then
+-- DB가 비어있는 초기 상태일 경우 세팅
+if dbRaw == "" then
     print("⚠️ [야메추 모듈] menu_db 초기 세팅 진행")
-    db = {
-        ["짜장면"] = { category = "중식", is_favorite = false, is_new = false, score_offset = 0, refused_count = 0, disliked = false },
-        ["김치찌개"] = { category = "한식", is_favorite = true, is_new = false, score_offset = 0, eaten_days_ago = 8, refused_count = 0, disliked = false },
-        ["후라이드치킨"] = { category = "치킨", is_favorite = true, is_new = false, score_offset = 0, refused_count = 0, disliked = false }
-    }
     setVar("menu_db", json_encode(db))
-else
-    -- 기본 메뉴 항목 유지
-    db = {
-        ["짜장면"] = { category = "중식", is_favorite = false, is_new = false, score_offset = 0, refused_count = 0, disliked = false },
-        ["김치찌개"] = { category = "한식", is_favorite = true, is_new = false, score_offset = 0, eaten_days_ago = 8, refused_count = 0, disliked = false },
-        ["후라이드치킨"] = { category = "치킨", is_favorite = true, is_new = false, score_offset = 0, refused_count = 0, disliked = false }
-    }
 end
 
 local updated = false
@@ -70,7 +62,7 @@ for name, item in pairs(db) do
         if string.find(userMsg, name, 1, true) and (string.find(userMsg, "먹했") or string.find(userMsg, "먹었") or string.find(userMsg, "결정") or string.find(userMsg, "고를게") or string.find(userMsg, "선택") or string.find(userMsg, "먹을")) then
             item["eaten_days_ago"] = 0
             item["refused_count"] = 0
-            item["refused_days_ago"] = false
+            item["refused_days_ago"] = 0 -- [수정] false 대신 숫자 0 대입으로 연산 오류 방지
             updated = true
             print("🍱 [야메추 모듈] 섭취/선택 감지: " .. name)
         end
