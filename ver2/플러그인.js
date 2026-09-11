@@ -1,4 +1,8 @@
-// 🍱 [야메추 플러그인] JS 연동 및 추천 로직
+//@name 야메추
+//@display-name 🍱 야메추 플러그인
+//@api 3.0
+//@version 1.0.0
+
 const DEFAULT_DB = {
   "짜장면": { category: "중식", is_favorite: false, is_new: false, score_offset: 0, refused_count: 0, refused_days_ago: 0, disliked: false },
   "김치찌개": { category: "한식", is_favorite: true, is_new: false, score_offset: 0, eaten_days_ago: 8, refused_count: 0, refused_days_ago: 0, disliked: false },
@@ -67,12 +71,17 @@ function calculateTopMenu(db) {
   return calculatedList.slice(0, 4);
 }
 
-// RisuAI 이벤트 훅
-onGenerateFinished(async (ctx) => {
+// 전역 함수 정의
+window.runTopMenu = () => {
+  const db = getMenuDB();
+  const top4 = calculateTopMenu(db);
+  Risuai.setVar("top_menu_json", JSON.stringify(top4));
+};
+
+window.handleGenerateFinished = (ctx) => {
   const db = getMenuDB();
   let updated = false;
 
-  // Lua 스크립트 실행 로그 또는 대화 텍스트 기반 감지
   const userMsg = ctx.userMessage || "";
   const aiMsg = ctx.aiMessage || "";
 
@@ -85,7 +94,7 @@ onGenerateFinished(async (ctx) => {
     }
 
     // 섭취/선택 감지
-    if (userMsg.includes(name) && ["먹했", "먹었", "결정", "고를게", "선택", "먹을"].some(k => userMsg.includes(k))) {
+    if (userMsg.includes(name) && ["먹었", "결정", "고를게", "선택", "먹을"].some(k => userMsg.includes(k))) {
       db[name].eaten_days_ago = 0;
       db[name].refused_count = 0;
       db[name].refused_days_ago = 0;
@@ -93,11 +102,19 @@ onGenerateFinished(async (ctx) => {
     }
   }
 
-  // DB 업데이트 및 Top 4 변수 저장
   if (updated) {
     Risuai.setVar("menu_db", JSON.stringify(db));
   }
 
   const top4 = calculateTopMenu(db);
   Risuai.setVar("top_menu_json", JSON.stringify(top4));
+};
+
+// 모듈 매니저 등록 (직렬화 가능한 데이터만)
+Risuai.registerPlugin({
+  name: "야메추",
+  methods: {
+    run: "runTopMenu",
+    onGenerateFinished: "handleGenerateFinished"
+  }
 });
