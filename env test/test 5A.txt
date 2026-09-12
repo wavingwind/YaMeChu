@@ -1,9 +1,0 @@
-print("🧪 [단순 값 저장 테스트] 시작")
-
--- 이전 턴 값 읽기
-local ping_val = getChatVar("ping") or "nil"
-print("📖 [현재 턴 읽기] ping 값: [" .. tostring(ping_val) .. "]")
-
--- 이번 턴에 단순 값 쓰기
-setChatVar("ping", "1")
-print("💾 [현재 턴 쓰기] ping = 1 쓰기 완료")
