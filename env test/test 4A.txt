@@ -1,0 +1,23 @@
+print("🧪 [Step 1] 함수 정의 및 호출 테스트 시작")
+
+local function daysSince(lastDays)
+    if not lastDays then return 999 end
+    return lastDays
+end
+
+local function calculateScore(item, state)
+    print("🧪 [Step 1] calculateScore 내부 진입")
+    local score = 80
+    local days = daysSince(state and state.lastEaten)
+    print("🧪 [Step 1] 계산된 days: " .. tostring(days))
+    return score + days
+end
+
+print("🧪 [Step 1] 함수 호출 시도")
+local testResult = calculateScore({ name = "짜장면" }, { lastEaten = 3 })
+print("🧪 [Step 1] 호출 결과: " .. tostring(testResult))
+
+return {
+    calculateScore = calculateScore,
+    daysSince = daysSince
+}

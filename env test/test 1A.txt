@@ -1,0 +1,14 @@
+print("🧪 [비동기/문자열 테스트] 시작")
+
+-- 1. 현재 저장되어 있는 값 읽어오기
+local current_val = getChatVar("test_menu_db") or "nil"
+print("📖 [현재 턴 읽기] 값: [" .. tostring(current_val) .. "] / 길이: " .. tostring(#tostring(current_val)))
+
+-- 2. 새 긴 JSON 문자열 쓰기
+local test_json = '{"짜장면":{"category":"중식","score":80},"김치찌개":{"category":"한식","score":95}}'
+setChatVar("test_menu_db", test_json)
+print("💾 [현재 턴 쓰기] 입력 길이: " .. tostring(#test_json))
+
+-- 3. 쓰자마자 즉시 다시 읽어오기
+local immediate_val = getChatVar("test_menu_db") or "nil"
+print("⚡ [즉시 읽기] 값: [" .. tostring(immediate_val) .. "] / 길이: " .. tostring(#tostring(immediate_val)))

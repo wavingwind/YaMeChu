@@ -1,0 +1,13 @@
+print("🧪 [return 문 검증] 시작")
+
+local testTable = {
+    hello = "world",
+    calc = function(a, b) return a + b end
+}
+
+print("🧪 [return 직전] 여기까지 실행됨")
+
+-- 최상단 return 실행
+return testTable
+
+print("❌ [return 직후] 이 로그가 찍히면 return이 무시된 것임")

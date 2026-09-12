@@ -1,0 +1,10 @@
+print("🧪 [return 문 검증] 시작")
+
+local testTable = {
+    hello = "world",
+    calc = function(a, b) return a + b end
+}
+
+print("🧪 [return 직전] 여기까지 실행됨")
+
+return testTable

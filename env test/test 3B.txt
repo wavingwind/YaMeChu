@@ -1,0 +1,10 @@
+print("🧪 [턴 분리 테스트] 실행 시작")
+
+-- 이전 턴에서 저장된 값 확인
+local saved_val = getChatVar("test_turn_db") or "nil"
+print("📖 [현재 턴 읽기] 저장된 값: [" .. tostring(saved_val) .. "]")
+
+-- 이번 턴에 새 값 쓰기 (현재 시간 기재)
+local new_val = "Hello_Risu_" .. tostring(os and os.time and os.time() or "1234")
+setChatVar("test_turn_db", new_val)
+print("💾 [현재 턴 쓰기] 작성한 값: [" .. new_val .. "]")
